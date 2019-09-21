@@ -88,4 +88,11 @@ input:focus {
   margin-top: 1em;
 }
 
+.dashboard {
+  width: 600px;
+  margin: 20px auto;  
+  border: 1px solid #ddd;
+  padding: 10px;
+  background: #fff;
+}
 /*# sourceMappingURL=main-460da85a3476cb72609ce7777f326d54.css.map*/

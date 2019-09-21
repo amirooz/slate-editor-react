@@ -130,7 +130,7 @@ class TextEditor extends Component {
                     <img
                     {...attributes}
                     src={src}
-                    alt={'avater'}
+                    alt={src}
                     className={css`
                         display: block;
                         max-width: 100%;
@@ -234,8 +234,9 @@ class TextEditor extends Component {
     }
 
     onClickImage = event => {
-        event.preventDefault()
-        const src = window.prompt('Enter the URL of the image:')
+        // event.preventDefault()
+        // const src = window.prompt('Enter the URL of the image:')
+        const src = ''
         if (!src) return
         this.editor.command(this.insertImage, src)
     }
@@ -274,7 +275,7 @@ class TextEditor extends Component {
     
     render() {
         return (
-        <div>
+        <div className="dashboard">
             <Toolbar>
                 {this.renderMarkButton('bold', 'format_bold')}
                 {this.renderMarkButton('italic', 'format_italic')}
