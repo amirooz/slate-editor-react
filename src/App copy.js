@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Dashboard from './components/Dashboard';
+import TextEditor from './components/TextEditor';
 
 
 
@@ -10,7 +10,7 @@ function App() {
         <BrowserRouter>
             <div className="App">
                 <Navbar />
-                <Dashboard />
+                <TextEditor />
             </div>
         </BrowserRouter>
     )
