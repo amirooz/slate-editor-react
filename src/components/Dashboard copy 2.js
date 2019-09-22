@@ -251,12 +251,14 @@ class Dashboard extends Component {
           type: 'image',
           data: { src },
         })
+        console.log(2)
     }
 
     onClickImage = event => {
         event.preventDefault()
         const src = window.prompt('Enter the URL of the image:')
         if (!src) return
+        console.log(src);
         this.editor.command(this.insertImage, src)
     }
 
@@ -296,12 +298,14 @@ class Dashboard extends Component {
         event.preventDefault()
         const fileSelector = document.createElement('input')
         fileSelector.setAttribute('type', 'file')
-        fileSelector.setAttribute('value', '')
+        fileSelector.setAttribute('name', 'file')
+        // fileSelector.setAttribute('multiple', 'multiple')
         fileSelector.setAttribute('accept', '.pdf, .txt')
-        // console.log(event.target.files[0])
         fileSelector.click()
+        // return fileSelector
         if (!fileSelector) return
-        const src = fileSelector        
+        const src = fileSelector
+        console.log(src);
         this.editor.command(this.insertFile, src)
     }
 
