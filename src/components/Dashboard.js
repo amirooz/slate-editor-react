@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Editor, getEventTransfer } from 'slate-react'
-import { Block } from 'slate'
-import InitialValue from './InitialValue'
+import { Block, Value } from 'slate'
+import InitialValue from './InitialValue1'
 import imageExtensions from 'image-extensions'
 import isUrl from 'is-url'
 import { css } from 'emotion'
@@ -36,7 +36,7 @@ const schema = {
 
 class Dashboard extends Component {
     state = {
-        value: InitialValue
+        value: InitialValue,
     }
 
     hasMark = (type) => {
@@ -159,10 +159,18 @@ class Dashboard extends Component {
     }
 
     onChange = ({ value }) => {
-        if (value.document !== this.state.value.document) {
-            const content = JSON.stringify(value.toJSON())
-            localStorage.setItem('content', content)
-        }
+        this.setState({ value })
+    }
+
+    saveDataLocalStorage = ({ value }) => {
+        const content = JSON.stringify(this.state.value.toJSON())
+        localStorage.setItem('content', content)
+        this.setState({ })
+    }
+
+    discardChange = () => {
+        const existingValue = JSON.parse(localStorage.getItem('content'))
+        const value = Value.fromJSON(existingValue || InitialValue )
         this.setState({ value })
     }
 
@@ -296,9 +304,7 @@ class Dashboard extends Component {
         event.preventDefault()
         const fileSelector = document.createElement('input')
         fileSelector.setAttribute('type', 'file')
-        fileSelector.setAttribute('value', '')
         fileSelector.setAttribute('accept', '.pdf, .txt')
-        // console.log(event.target.files[0])
         fileSelector.click()
         if (!fileSelector) return
         const src = fileSelector        
@@ -335,6 +341,8 @@ class Dashboard extends Component {
                     <Button onMouseDown={this.onClickFile}>
                         <Icon>attach_file</Icon>
                     </Button>
+                    <Button className="waves-effect waves-light btn-small save blue right" onClick={this.saveDataLocalStorage}>Save</Button>
+                    <Button className="waves-effect waves-light btn-small cancel grey lighten-2 right" onClick={this.discardChange}>Cancel</Button>
                 </Toolbar>
                 <Editor
                     spellCheck

@@ -95,4 +95,8 @@ input:focus {
   padding: 20px;
   background: #fff;
 }
+
+.save, .cancel {
+  margin: -8px 0;
+}
 /*# sourceMappingURL=main-460da85a3476cb72609ce7777f326d54.css.map*/
