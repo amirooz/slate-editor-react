@@ -15,22 +15,22 @@ const isUnderlinedHotkey = isKeyHotkey('mod+u')
 const isCodeHotkey = isKeyHotkey('mod+`')
 const schema = {
     document: {
-      last: { type: 'paragraph' },
-      normalize: (editor, { code, node, child }) => {
-        switch (code) {
-          case 'last_child_type_invalid': {
-            const paragraph = Block.create('paragraph')
-            return editor.insertNodeByKey(node.key, node.nodes.size, paragraph)
-          }
-          default:
-              return ''
+        last: { type: 'paragraph' },
+        normalize: (editor, { code, node, child }) => {
+            switch (code) {
+            case 'last_child_type_invalid': {
+                const paragraph = Block.create('paragraph')
+                return editor.insertNodeByKey(node.key, node.nodes.size, paragraph)
+            }
+            default:
+                return ''
+            }
         }
-      }
     },
     blocks: {
-      image: {
-        isVoid: true,
-      }
+        image: {
+            isVoid: true,
+        }
     }
 }
 
@@ -263,7 +263,7 @@ class Dashboard extends Component {
 
     onClickImage = event => {
         event.preventDefault()
-        const src = window.prompt('Enter the URL of the image:')
+        const src = window.prompt('Enter the URL of the image:', '<input type="file" />')
         if (!src) return
         this.editor.command(this.insertImage, src)
     }
@@ -324,40 +324,46 @@ class Dashboard extends Component {
 
     render() {
         return (
-            <div className="dashboard">
-                <Toolbar>
-                    {this.renderMarkButton('bold', 'format_bold')}
-                    {this.renderMarkButton('italic', 'format_italic')}
-                    {this.renderMarkButton('underlined', 'format_underlined')}
-                    {this.renderMarkButton('code', 'code')}
-                    {this.renderBlockButton('heading-one', 'looks_one')}
-                    {this.renderBlockButton('heading-two', 'looks_two')}
-                    {this.renderBlockButton('block-quote', 'format_quote')}
-                    {this.renderBlockButton('numbered-list', 'format_list_numbered')}
-                    {this.renderBlockButton('bulleted-list', 'format_list_bulleted')}
-                    <Button onMouseDown={this.onClickImage}>
-                        <Icon>image</Icon>
-                    </Button>
-                    <Button onMouseDown={this.onClickFile}>
-                        <Icon>attach_file</Icon>
-                    </Button>
-                    <Button className="waves-effect waves-light btn-small save blue right" onClick={this.saveDataLocalStorage}>Save</Button>
-                    <Button className="waves-effect waves-light btn-small cancel grey lighten-2 right" onClick={this.discardChange}>Cancel</Button>
-                </Toolbar>
-                <Editor
-                    spellCheck
-                    autoFocus
-                    placeholder="Enter some rich text..."
-                    ref={this.ref}
-                    value={this.state.value}
-                    schema={schema}
-                    onChange={this.onChange}
-                    onKeyDown={this.onKeyDown}
-                    onDrop={this.onDropOrPaste}
-                    onPaste={this.onDropOrPaste}
-                    renderMark={this.renderMark}
-                    renderBlock={this.renderBlock}
-                />
+            <div className="container">
+                <div className="dashboard">
+                    <Toolbar>
+                        {this.renderMarkButton('undo', 'undo')}
+                        {this.renderMarkButton('redo', 'redo')}
+                        {this.renderMarkButton('bold', 'format_bold')}
+                        {this.renderMarkButton('italic', 'format_italic')}
+                        {this.renderMarkButton('underlined', 'format_underlined')}
+                        {this.renderMarkButton('code', 'code')}
+                        {this.renderBlockButton('heading-one', 'looks_one')}
+                        {this.renderBlockButton('heading-two', 'looks_two')}
+                        {this.renderBlockButton('block-quote', 'format_quote')}
+                        {this.renderBlockButton('numbered-list', 'format_list_numbered')}
+                        {this.renderBlockButton('bulleted-list', 'format_list_bulleted')}
+                        {this.renderBlockButton('indent_decrease', 'format_indent_decrease')}
+                        {this.renderBlockButton('indent_increase', 'format_indent_increase')}
+                        <Button onMouseDown={this.onClickImage}>
+                            <Icon>image</Icon>
+                        </Button>
+                        <Button onMouseDown={this.onClickFile}>
+                            <Icon>attach_file</Icon>
+                        </Button>
+                        <Button className="waves-effect waves-light btn-small save blue right" onClick={this.saveDataLocalStorage}>Save</Button>
+                        <Button className="waves-effect waves-light btn-small cancel grey lighten-2 right" onClick={this.discardChange}>Cancel</Button>
+                    </Toolbar>
+                    <Editor
+                        spellCheck
+                        autoFocus
+                        placeholder="Enter some rich text..."
+                        ref={this.ref}
+                        value={this.state.value}
+                        schema={schema}
+                        onChange={this.onChange}
+                        onKeyDown={this.onKeyDown}
+                        onDrop={this.onDropOrPaste}
+                        onPaste={this.onDropOrPaste}
+                        renderMark={this.renderMark}
+                        renderBlock={this.renderBlock}
+                    />
+                </div>                
             </div>
         )
     }
