@@ -6,8 +6,6 @@
     "slate": "^0.42.0 || ^0.47.8"
   },
   "dependencies": {
-    "@canner/slate-icon-align": "^1.5.0",
-    "@canner/slate-icon-bold": "^1.5.0",
     "@convertkit/slate-keymap": "^0.1.8",
     "@convertkit/slate-lists": "^0.2.4",
     "@gitbook/slate": "^3.2.8",
