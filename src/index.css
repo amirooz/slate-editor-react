@@ -12,6 +12,44 @@ code {
     monospace;
 }
 
+/* custom css */
+.page--home {
+  margin-top: 80px;
+}
+
+.page--home .header {
+  margin: 10px auto 15px;
+  text-align: center;
+}
+
+.page--home .editor--root {
+  width: 65%;
+  margin: 0 auto;
+}
+
+.page--home .editor--content {
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  padding: .2rem;
+}
+
+.page--home .editor--content > div {
+  min-height: 100px;
+}
+
+.page--home .editor--toolbar {
+  background-color: #0275d8;
+}
+
+.page--home .toolbar--footer > * {
+  float: right;
+}
+
+.page--home .footer {
+  float: left;
+  margin-top: 10px;
+}
+
 html,
 input,
 textarea {
@@ -99,4 +137,6 @@ input:focus {
 .save, .cancel {
   margin: -8px 0;
 }
-/*# sourceMappingURL=main-460da85a3476cb72609ce7777f326d54.css.map*/
+.custom-color {
+  background-color: #1a73e8;
+}

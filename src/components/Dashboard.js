@@ -1,18 +1,22 @@
 import React, { Component } from 'react'
 import { Editor, getEventTransfer } from 'slate-react'
 import { Block, Value } from 'slate'
-import InitialValue from './InitialValue1'
+import InitialValue from './InitialContent'
 import imageExtensions from 'image-extensions'
 import isUrl from 'is-url'
 import { css } from 'emotion'
 import { isKeyHotkey } from 'is-hotkey'
-import { Button, Icon, Toolbar } from './components'
+import { Button, Icon, Toolbar } from './Components'
 
 const DEFAULT_NODE = 'paragraph'
 const isBoldHotkey = isKeyHotkey('mod+b')
 const isItalicHotkey = isKeyHotkey('mod+i')
 const isUnderlinedHotkey = isKeyHotkey('mod+u')
 const isCodeHotkey = isKeyHotkey('mod+`')
+const plugins = [
+    // EditList()
+    // ImagePlugin()
+]
 const schema = {
     document: {
         last: { type: 'paragraph' },
@@ -37,6 +41,7 @@ const schema = {
 class Dashboard extends Component {
     state = {
         value: InitialValue,
+        file: null
     }
 
     hasMark = (type) => {
@@ -55,12 +60,11 @@ class Dashboard extends Component {
 
     renderMarkButton = (type, icon) => {
         const isActive = this.hasMark(type)
-    
+
         return (
             <Button
                 active={isActive}
-                onMouseDown={event => this.onClickMark(event, type)}
-            >
+                onMouseDown={event => this.onClickMark(event, type)}>
                 <Icon>{icon}</Icon>
             </Button>
         )
@@ -68,16 +72,16 @@ class Dashboard extends Component {
 
     renderBlockButton = (type, icon) => {
         let isActive = this.hasBlock(type)
-    
+
         if (['numbered-list', 'bulleted-list'].includes(type)) {
             const { value: { document, blocks } } = this.state
-        
+
             if (blocks.size > 0) {
                 const parent = document.getParent(blocks.first().key)
                 isActive = this.hasBlock('list-item') && parent && parent.type === type
             }
         }
-    
+
         return (
             <Button
                 active={isActive}
@@ -90,12 +94,10 @@ class Dashboard extends Component {
 
     renderBlock = (props, editor, next) => {
         const { attributes, children, node } = props
-    
+
         switch (node.type) {
             case 'block-quote':
                 return <blockquote {...attributes}>{children}</blockquote>
-            case 'bulleted-list':
-                return <ul {...attributes}>{children}</ul>
             case 'heading-one':
                 return <h1 {...attributes}>{children}</h1>
             case 'heading-two':
@@ -104,6 +106,8 @@ class Dashboard extends Component {
                 return <li {...attributes}>{children}</li>
             case 'numbered-list':
                 return <ol {...attributes}>{children}</ol>
+            case 'bulleted-list':
+                return <ul {...attributes}>{children}</ul>
             case 'image': {
                 const src = node.data.get('src')
                 return (
@@ -143,7 +147,7 @@ class Dashboard extends Component {
 
     renderMark = (props, editor, next) => {
         const { children, mark, attributes } = props
-    
+
         switch (mark.type) {
             case 'bold':
                 return <strong {...attributes}>{children}</strong>
@@ -176,7 +180,7 @@ class Dashboard extends Component {
 
     onKeyDown = (event, editor, next) => {
         let mark
-    
+
         if (isBoldHotkey(event)) {
             mark = 'bold'
         } else if (isItalicHotkey(event)) {
@@ -188,7 +192,7 @@ class Dashboard extends Component {
         } else {
             return next()
         }
-    
+
         event.preventDefault()
         editor.toggleMark(mark)
     }
@@ -200,16 +204,16 @@ class Dashboard extends Component {
 
     onClickBlock = (event, type) => {
         event.preventDefault()
-    
+
         const { editor } = this
         const { value } = editor
         const { document } = value
-    
+
         // Handle everything but list buttons.
         if (type !== 'bulleted-list' && type !== 'numbered-list') {
           const isActive = this.hasBlock(type)
           const isList = this.hasBlock('list-item')
-    
+
             if (isList) {
                 editor
                 .setBlocks(isActive ? DEFAULT_NODE : type)
@@ -224,7 +228,7 @@ class Dashboard extends Component {
             const isType = value.blocks.some(block => {
                 return !!document.getClosest(block.key, parent => parent.type === type)
             })
-        
+
             if (isList && isType) {
                 editor
                 .setBlocks(DEFAULT_NODE)
@@ -241,7 +245,7 @@ class Dashboard extends Component {
             }
         }
     }
-  
+
     isImage = (url) => {
         return imageExtensions.includes(this.getExtension(url))
     }
@@ -254,7 +258,7 @@ class Dashboard extends Component {
         if (target) {
             editor.select(target)
         }
-      
+
         editor.insertBlock({
           type: 'image',
           data: { src },
@@ -263,7 +267,7 @@ class Dashboard extends Component {
 
     onClickImage = event => {
         event.preventDefault()
-        const src = window.prompt('Enter the URL of the image:', '<input type="file" />')
+        const src = window.prompt('Enter the URL of the image:')
         if (!src) return
         this.editor.command(this.insertImage, src)
     }
@@ -271,32 +275,33 @@ class Dashboard extends Component {
     onDropOrPaste = (event, editor, next) => {
         const target = editor.findEventRange(event)
         if (!target && event.type === 'drop') return next()
-    
+
         const transfer = getEventTransfer(event)
         const { type, text, files } = transfer
-    
+
         if (type === 'files') {
+            // eslint-disable-next-line
             for (const file of files) {
                 const reader = new FileReader()
                 const [mime] = file.type.split('/')
                 if (mime !== 'image') continue
-        
+
                 reader.addEventListener('load', () => {
                     editor.command(this.insertImage, reader.result, target)
                 })
-        
+
                 reader.readAsDataURL(file)
             }
             return
         }
-    
+
         if (type === 'text') {
             if (!isUrl(text)) return next()
             if (!this.isImage(text)) return next()
             editor.command(this.insertImage, text, target)
             return
         }
-    
+
         next()
     }
 
@@ -304,18 +309,23 @@ class Dashboard extends Component {
         event.preventDefault()
         const fileSelector = document.createElement('input')
         fileSelector.setAttribute('type', 'file')
+        fileSelector.setAttribute('id', 'pdffile')
         fileSelector.setAttribute('accept', '.pdf, .txt')
         fileSelector.click()
+        const docs = event.target.value
         if (!fileSelector) return
-        const src = fileSelector        
-        this.editor.command(this.insertFile, src)
+        console.log(docs)
+        return fileSelector
+        // const src = fileSelector
+        // if (!src) return
+        // this.editor.command(this.insertFile, src)
     }
 
     insertFile = (editor, src, target) => {
         if (target) {
           editor.select(target)
         }
-      
+
         editor.insertBlock({
           type: 'file',
           data: { src },
@@ -327,8 +337,6 @@ class Dashboard extends Component {
             <div className="container">
                 <div className="dashboard">
                     <Toolbar>
-                        {this.renderMarkButton('undo', 'undo')}
-                        {this.renderMarkButton('redo', 'redo')}
                         {this.renderMarkButton('bold', 'format_bold')}
                         {this.renderMarkButton('italic', 'format_italic')}
                         {this.renderMarkButton('underlined', 'format_underlined')}
@@ -346,8 +354,8 @@ class Dashboard extends Component {
                         <Button onMouseDown={this.onClickFile}>
                             <Icon>attach_file</Icon>
                         </Button>
-                        <Button className="waves-effect waves-light btn-small save blue right" onClick={this.saveDataLocalStorage}>Save</Button>
-                        <Button className="waves-effect waves-light btn-small cancel grey lighten-2 right" onClick={this.discardChange}>Cancel</Button>
+                        <Button className="waves-effect waves-light btn-small save blue darken-2 right" onClick={this.saveDataLocalStorage}>Save</Button>
+                        <Button className="waves-effect waves-light btn-small cancel grey white-text right" onClick={this.discardChange}>Cancel</Button>
                     </Toolbar>
                     <Editor
                         spellCheck
@@ -355,15 +363,17 @@ class Dashboard extends Component {
                         placeholder="Enter some rich text..."
                         ref={this.ref}
                         value={this.state.value}
+                        plugins={plugins}
                         schema={schema}
-                        onChange={this.onChange}
+                        state={this.state.state}
+                        onChange={this.onChange.bind(this)}
                         onKeyDown={this.onKeyDown}
                         onDrop={this.onDropOrPaste}
                         onPaste={this.onDropOrPaste}
                         renderMark={this.renderMark}
                         renderBlock={this.renderBlock}
                     />
-                </div>                
+                </div>
             </div>
         )
     }

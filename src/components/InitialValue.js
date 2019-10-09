@@ -75,25 +75,15 @@ const initialValue = Value.fromJSON({
       },
       {
         object: "block",
-        "type": "paragraph",
-        "nodes": [
-          {
-            object: "text",
-            text: "Try it out for yourself!"
-          }
-        ]
-      },
-      {
-        object: "block",
         type: "image",
         data: {
           "src":
-            "https://img.washingtonpost.com/wp-apps/imrs.php?src=https://img.washingtonpost.com/news/speaking-of-science/wp-content/uploads/sites/36/2015/10/as12-49-7278-1024x1024.jpg&w=1484"
+            "https://media.licdn.com/dms/image/C4D0BAQF5fQA0M1a-uA/company-logo_200_200/0?e=2159024400&v=beta&t=BQ92OCHu1fslE-orIXFgsXn9TTMbVOo3j1j6KkrZtHM"
         }
       },
       {
         object: "block",
-        type: "file",
+        type: "image",
         data: {
           "src":
             "http://www.africau.edu/images/default/sample.pdf"

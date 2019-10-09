@@ -1,19 +1,23 @@
 import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Dashboard from './components/Dashboard';
-
-
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import Navbar from './components/Navbar'
+import Dashboard from './components/Dashboard'
+import Editor from './components/Home'
+import Upload from './components/Upload'
 
 function App() {
-    return(
+    return (
         <BrowserRouter>
             <div className="App">
                 <Navbar />
-                <Dashboard />
+                <Switch>
+                    <Route exact path="/" component={Dashboard} />
+                    <Route path="/editor" component={Editor} />
+                    <Route path="/upload" component={Upload} />
+                </Switch>
             </div>
         </BrowserRouter>
-    )
+    );
 }
 
 export default App;
